@@ -2,8 +2,10 @@ FROM   registry.access.redhat.com/ubi8/ubi:8.0
 
 MAINTAINER   Red Hat Training <training@redhat.com>
 
+RUN UNIQUE_HOST_ID=$(cat /proc/self/cgroup | head -1 | awk -F '/' '{print $NF}' | awk -F '-' '{print $2}' | cut -c 1-12) ; if [ -z $UNIQUE_HOST_ID ]; then UNIQUE_HOST_ID=$(cat /proc/self/cgroup | head -1 | awk -F '/' '{print $NF}' | cut -c 1-12)'
+
 # command line options to pass to the JVM
-ENV	  JAVA_OPTIONS -Xmx512m
+ENV	  JAVA_OPTIONS -Dappdynamics.agent.uniqueHostId=$UNIQUE_HOST_ID -Xmx512m 
 
 
 # Install the Java runtime, create a user for running the app, and set permissions
